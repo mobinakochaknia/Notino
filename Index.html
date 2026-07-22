@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fa" data-theme="light" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نوتینو — پایگاه دانش شما</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="app-brand">
+        <span class="brand-icon">◈</span>
+        <span class="brand-name">نوتینو</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeToggleBtn" title="تغییر حالت شب/روز">☽</button>
+        <button class="icon-btn" id="sidebarToggleBtn" title="بستن نوار کناری">⇥</button>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="sidebar-search">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="جستجوی یادداشت‌ها..." autocomplete="off" />
+      <button class="search-clear" id="searchClear" title="پاک کردن">✕</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="sidebar-actions">
+      <button class="action-btn primary" id="newNoteBtn">
+        <span>+</span> یادداشت جدید
+      </button>
+      <button class="action-btn" id="newFolderBtn">
+        <span>⊞</span> پوشه جدید
+      </button>
+    </div>
+
+    <!-- Sort -->
+    <div class="sidebar-sort">
+      <label class="sort-label">مرتب‌سازی:</label>
+      <select id="sortSelect">
+        <option value="updated">آخرین ویرایش</option>
+        <option value="created">تاریخ ایجاد</option>
+        <option value="title">عنوان (الف-ی)</option>
+      </select>
+    </div>
+
+    <!-- Pinned Notes -->
+    <section class="sidebar-section" id="pinnedSection">
+      <div class="section-header">
+        <span class="section-title">📌 پین‌شده‌ها</span>
+      </div>
+      <ul class="note-list" id="pinnedList"></ul>
+    </section>
+
+    <!-- Folders -->
+    <section class="sidebar-section" id="foldersSection">
+      <div class="section-header">
+        <span class="section-title">پوشه‌ها</span>
+      </div>
+      <ul class="folder-list" id="folderList"></ul>
+    </section>
+
+    <!-- All Notes -->
+    <section class="sidebar-section">
+      <div class="section-header">
+        <span class="section-title">یادداشت‌ها</span>
+      </div>
+      <ul class="note-list" id="noteList"></ul>
+    </section>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <button class="footer-btn" id="exportBtn" title="خروجی گرفتن اطلاعات بصورت JSON">
+        ↑ خروجی
+      </button>
+      <label class="footer-btn" id="importLabel" title="وارد کردن اطلاعات از فایل JSON">
+        ↓ ورود
+        <input type="file" id="importInput" accept=".json" style="display:none" />
+      </label>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════ -->
+  <main class="main" id="main">
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <button class="icon-btn" id="mobileSidebarBtn">☰</button>
+      <span class="brand-name">فولیو</span>
+      <button class="icon-btn" id="mobileThemeBtn">☽</button>
+    </div>
+
+    <!-- Welcome / Empty State -->
+    <div class="welcome-screen" id="welcomeScreen">
+      <div class="welcome-inner">
+        <div class="welcome-icon">◈</div>
+        <h1 class="welcome-title">به نوتینو خوش آمدید</h1>
+        <p class="welcome-sub">پایگاه دانش محلی، سریع و تمیز شما.</p>
+        <button class="welcome-btn" id="welcomeNewNoteBtn">ایجاد اولین یادداشت ←</button>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div class="editor-container" id="editorContainer" style="display:none">
+
+      <!-- Editor Toolbar -->
+      <div class="editor-toolbar">
+        <div class="toolbar-left">
+          <button class="tool-btn" data-cmd="bold" title="ضخیم (Ctrl+B)"><b>B</b></button>
+          <button class="tool-btn" data-cmd="italic" title="مورب (Ctrl+I)"><i>I</i></button>
+          <button class="tool-btn" data-cmd="underline" title="زیرخط (Ctrl+U)"><u>U</u></button>
+          <button class="tool-btn" data-list="ul">• List</button>
+          <button class="tool-btn" data-list="ol">1. List</button>
+          <div class="tool-divider"></div>
+          <label class="tool-btn color-btn" title="رنگ متن">
+            <span id="colorIndicator">A</span>
+            <input type="color" id="textColorPicker" value="#e05c4d" />
+          </label>
+          <div class="tool-divider"></div>
+          <button class="tool-btn" id="previewToggleBtn" title="پیش‌نمایش">⊙ پیش‌نمایش</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="tool-btn pin-btn" id="pinNoteBtn" title="پین کردن">📌</button>
+          <div class="tool-divider"></div>
+          <select id="folderAssignSelect" title="انتقال به پوشه">
+            <option value="">بدون پوشه</option>
+          </select>
+          <div class="tool-divider"></div>
+          <button class="tool-btn danger-btn" id="deleteNoteBtn" title="حذف یادداشت">🗑 حذف</button>
+        </div>
+      </div>
+
+      <!-- Editor Body -->
+      <div class="editor-body">
+
+        <!-- Write Mode -->
+        <div class="write-pane" id="writePane">
+          <input
+            type="text"
+            class="note-title-input"
+            id="noteTitleInput"
+            placeholder="یادداشت بدون عنوان"
+          />
+          <div class="note-meta" id="noteMeta"></div>
+          <textarea
+            class="note-content-input"
+            id="noteContentInput"
+            placeholder="شروع به نوشتن کنید... از مارک‌داون (Markdown) پشتیبانی می‌شود."
+          ></textarea>
+        </div>
+
+        <!-- Preview Mode -->
+        <div class="preview-pane" id="previewPane" style="display:none">
+          <h1 class="preview-title" id="previewTitle"></h1>
+          <div class="note-meta" id="previewMeta"></div>
+          <div class="markdown-body" id="markdownPreview"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       MODALS
+  ═══════════════════════════════════════════ -->
+
+  <!-- Folder Name Modal -->
+  <div class="modal-overlay" id="folderModal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="folderModalTitle">پوشه جدید</h3>
+        <button class="icon-btn" id="closeFolderModal">✕</button>
+      </div>
+      <input type="text" class="modal-input" id="folderNameInput" placeholder="نام پوشه..." maxlength="40" />
+      <div class="modal-actions">
+        <button class="action-btn" id="cancelFolderBtn">لغو</button>
+        <button class="action-btn primary" id="saveFolderBtn">ذخیره</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay" id="confirmModal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>تایید حذف</h3>
+        <button class="icon-btn" id="closeConfirmModal">✕</button>
+      </div>
+      <p class="modal-body-text" id="confirmModalText">آیا از حذف این مورد اطمینان دارید؟</p>
+      <div class="modal-actions">
+        <button class="action-btn" id="cancelConfirmBtn">لغو</button>
+        <button class="action-btn danger" id="confirmDeleteBtn">حذف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
